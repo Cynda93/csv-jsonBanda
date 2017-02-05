@@ -1,8 +1,8 @@
 package edu.jsu.mcis;
 
 import org.junit.*;
-import edu.jsu.mcis.Main.json;
 import static org.junit.Assert.*;
+import static edu.jsu.mcis.Main.json;
 import au.com.bytecode.opencsv.CSVParser;
 
 import java.io.*;
@@ -11,10 +11,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-//import org.json.simple.parser.JSONParser;
-//import org.json.simple.parser.ParseException;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class ConverterTest {
+    
     private String csvString;
     private String jsonString;
 
@@ -22,11 +23,13 @@ public class ConverterTest {
     public void setUp() {
         Main.runConversions();
     }
+
+    @SuppressWarnings("unchecked")
     
     @Test
     public void testConvertCSVtoJSON() {
-
-        JSONObject ctojTest = new JSONObject();
+        JSONObject jTest = new JSONObject();
+        
         JSONArray row1 = new JSONArray();
         JSONArray row2 = new JSONArray();
         JSONArray row3 = new JSONArray();
@@ -35,7 +38,9 @@ public class ConverterTest {
         JSONArray row6 = new JSONArray();
         JSONArray row7 = new JSONArray();
         JSONArray row8 = new JSONArray();
+
         JSONArray data = new JSONArray();
+        
         JSONArray colHeaders = new JSONArray();
         JSONArray rowHeaders = new JSONArray();
         
@@ -43,7 +48,7 @@ public class ConverterTest {
         colHeaders.add("Assignment 1");
         colHeaders.add("Assignment 2");
         colHeaders.add("Exam 1");
-        
+       
         rowHeaders.add("111278");
         rowHeaders.add("111352");
         rowHeaders.add("111373");
@@ -70,19 +75,18 @@ public class ConverterTest {
         data.add(row6);
         data.add(row7);
         data.add(row8);
+        
+        jTest.put("colHeaders", colHeaders);
+        jTest.put("rowHeaders", rowHeaders);
+        jTest.put("data", data);
+        
+        assertEquals(jTest.toString(),Main.json);
 
-        ctojTest.put("ColHeaders", colHeaders);
-        ctojTest.put("RowHeaders", rowHeaders);
-        ctojTest.put("Data", data);
-
-        assertEquals(ctojTest.toString(), Main.json);
-        // You should test using the files in src/test/resources.
     }
 
     @Test
-    public void testConvertJSONtoCSV() throws IOException {
-
-        String jtocTest ="\"ID\",\"Total\",\"Assignment 1\",\"Assignment 2\",\"Exam 1\"\n" +
+    public void testConvertJSONtoCSV() {
+           String cTest="\"ID\",\"Total\",\"Assignment 1\",\"Assignment 2\",\"Exam 1\"\n" +
                         "\"111278\",\"611\",\"146\",\"128\",\"337\"\n" +
                         "\"111352\",\"867\",\"227\",\"228\",\"412\"\n" +
                         "\"111373\",\"461\",\"96\",\"90\",\"275\"\n" +
@@ -90,16 +94,10 @@ public class ConverterTest {
                         "\"111399\",\"898\",\"226\",\"229\",\"443\"\n" +
                         "\"111160\",\"454\",\"77\",\"125\",\"252\"\n" +
                         "\"111276\",\"579\",\"130\",\"111\",\"338\"\n" +
-                        "\"111241\",\"973\",\"236\",\"237\",\"500\"\n"; 
-
-        assertEquals(jtocTest, Main.csv);
-        // You should test using the files in src/test/resources.
+                        "\"111241\",\"973\",\"236\",\"237\",\"500\"\n" 
+                        ;
+        
+        assertEquals(cTest, Main.csv);
+        
     }
 }
-
-
-
-
-
-
-

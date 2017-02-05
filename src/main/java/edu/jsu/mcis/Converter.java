@@ -6,104 +6,100 @@ import au.com.bytecode.opencsv.*;
 import org.json.simple.*;
 import org.json.simple.parser.*;
 
-
 public class Converter {
-    
     
     @SuppressWarnings("unchecked")
     public static String csvToJson(String csvString) {
-		
-        JSONObject json_data = new JSONObject();
+   
+        JSONObject ctoJ = new JSONObject();
+       
+        JSONArray data = new JSONArray();
         JSONArray colHeaders = new JSONArray();
         JSONArray rowHeaders = new JSONArray();
-        JSONArray data = new JSONArray();
-
+        
         colHeaders.add("Total");
         colHeaders.add("Assignment 1");
         colHeaders.add("Assignment 2");
         colHeaders.add("Exam 1");
 
-        json_data.put("colHeaders", colHeaders);
-        json_data.put("rowHeaders", rowHeaders);
-        json_data.put("data", data);
+        ctoJ.put("colHeaders", colHeaders);
+        ctoJ.put("rowHeaders", rowHeaders);
+        ctoJ.put("data", data);
 
         CSVParser parser = new CSVParser();
         BufferedReader reader = new BufferedReader(new StringReader(csvString));
         
         try {
-            String csvline = reader.readLine();
-            while ((csvline = reader.readLine()) != null) {
-                String[] parseString = parser.parseLine(csvline);
-                rowHeaders.add(parseString[0]);
-                JSONArray row = new JSONArray();
-                row.add(new Long(parseString[1]));
-                row.add(new Long(parseString[2]));
-                row.add(new Long(parseString[3]));
-                row.add(new Long(parseString[4]));
-                data.add(row);
-            }
-            
-        } catch (IOException e) {
-        }
-        
-        return json_data.toString();
-    }
-	
-	
 
+            String line = reader.readLine();
 
+            while ((line = reader.readLine()) != null){
 
-	public static String jsonToCsv(String json_String) {
-		
-        JSONObject json = null;
-       
-        try { 
-            JSONParser jParser = new JSONParser();
-            json = (JSONObject) jParser.parse(json_String);
-        }    
-
-        catch (Exception e) {}
-
-        String cString = "\"ID\"," + Converter.<String>joinA((JSONArray) json.get("colHeaders")) + "\n";
-        
-        JSONArray rowHeaders = (JSONArray) json.get("rowHeader");   
-        JSONArray data = (JSONArray) json.get("Data");
-
-        for (int a=0; a < rowHeaders.size(); a++) {
-            cString = (cString + "\"" +(String)rowHeaders.get(a) + "\"," + Converter.<Long>joinA((JSONArray) data.get(a)) + "\n" );
-        }
-
-        return cString;
-
-        }
-
-        @SuppressWarnings("unchecked")
-        private static <T> String joinA(JSONArray jarray) {
-        
-            String fline = "";
-        
-            for (int i = 0; i < jarray.size(); i++) {
-                fline = (fline + "\"" + ((T) jarray.get(i)) + "\"");
+                String[] record = parser.parseLine(line);
+                rowHeaders.add(record[0]);
                 
-                if (i < jarray.size() - 1) {
-                    fline = fline + ",";
-            }
+                JSONArray row = new JSONArray();
+                row.add(new Long(record[1]));
+                row.add(new Long(record[2]));
+                row.add(new Long(record[3]));
+                row.add(new Long(record[4]));
+                data.add(row);
+          }
+            
+        } 
+        
+        catch (IOException e) {
+        }
+        
+        return ctoJ.toString();
+
+    }
+  
+    
+    public static String jsonToCsv(String jsonString) 
+    {
+        JSONObject jtoC = null;
+
+        try {
+            JSONParser jParser = new JSONParser();
+            jtoC = (JSONObject) jParser.parse(jsonString);
+        } 
+        
+        catch (Exception e) {}
+        
+       String csvString = "\"ID\"," + Converter.<String>joinArray((JSONArray) jtoC.get("colHeaders")) + "\n";
+
+       JSONArray rowHeaders = (JSONArray) jtoC.get("rowHeaders");
+       JSONArray data = (JSONArray) jtoC.get("data");        
+
+    for (int n = 0; n < rowHeaders.size(); n++) {
+           
+            csvString += ( "\""+ (String) rowHeaders.get(n) + "\"," + Converter.<Long>joinArray((JSONArray) data.get(n)) + "\n");
+       
         }
 
-        return fline;
-	}
+        return csvString;
+    }
 
+
+     @SuppressWarnings("unchecked")
+
+     
+    private static <T> String joinArray(JSONArray jsarray)
+    {
+        
+        String fLine = "";
+        
+        for (int n = 0; n < jsarray.size(); n++)
+     {
+           
+            fLine = (fLine + "\"" + ((T) jsarray.get(n)) + "\"");
+                if (n < jsarray.size() - 1) {
+               
+                fLine = fLine + ",";
+               }
+        }
+
+        return fLine;
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
